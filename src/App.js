@@ -1,23 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios'
+import React, { useState, useEffect } from 'react'
+import { FlightContext } from './context/FlightContext'
+import AppRouter from './router/AppRouter';
+
 
 function App() {
+
+  const [flightList, setflightList] = useState([]);
+  const [Passenger, setPassenger] = useState([]);
+  const [token , settoken] = useState();
+  const [islogin , setislogin] = useState();
+
+
+
+  useEffect(() => {
+      axios
+      .get("http://127.0.0.1:8000/api/flight/", {
+        headers: {
+          'Authorization': `Token ${token}`  
+        }
+      })
+      .then((res) => setflightList(res.data)) // objenin içinde data'nın içinde olduğunundan res.data dedik. clg ile yazdırınca görünüyor. setItemList(res.data)
+
+  },[token]);
+  console.log(flightList)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div >
+      <FlightContext.Provider value={{ flightList , Passenger, setPassenger, settoken, token, islogin , setislogin}}>
+
+        <AppRouter />
+
+      </FlightContext.Provider>
     </div>
   );
 }
